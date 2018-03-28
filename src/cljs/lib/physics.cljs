@@ -41,3 +41,23 @@
 
 (defn apply-direct-force [mass force]
   (v/div force mass))
+
+(defn is-active? [actives key]
+  (if (= (get actives key) nil)
+    false
+    true))
+
+(defn compute-wind [mass force active-list]
+  (let [active? (is-active? active-list :wind)
+        wind (if (= active? true)
+               (apply-direct-force mass force)
+               (v/create 0 0))]
+    wind))
+
+(defn compute-friction [mass velocity force active-list]
+  (let [active? (is-active? active-list :friction)
+        fric-mag (* (:c force) (:n force))
+        friction (if (= active? true)
+                   (apply-direct-force mass (v/mult (v/normalize (v/mult velocity -1)) fric-mag))
+                   (v/create 0 0))]
+    friction))

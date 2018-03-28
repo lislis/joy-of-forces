@@ -11,11 +11,6 @@
 (def height 500)
 (def unit 40)
 
-(defn is-active? [actives key]
-  (if (= (get actives key) nil)
-    false
-    true))
-
 (defn spawn []
   {:circle (p/create 230 250 0 0 0 0 5 30)
    :square (p/create 350 250 0 0 0 0 5 50)
@@ -24,34 +19,30 @@
 (defn setup []
   {:shapes (spawn)})
 
-(defn compute-forces [list wind gravity friction liquid]
-  (let [empty-force (v/create 0 0)
-        active-wind? (is-active? list :wind)
-        force1 (if (= active-wind? true)
-                 {:wind (v/add empty-force wind)}
-                 {:wind empty-force})]
-    (conj {} force1)))
-
-(defn apply-forces [shape forces]
-  (let [k (first shape)
-        obj (nth shape 1)
-        mass (:mass obj)
-        a (p/apply-direct-force mass (reduce v/add (vals forces)))
-        v1 (v/limit (v/add (:velocity obj) a) (:topspeed obj))
-        l1 (v/add (:location obj) v1)
-        v (p/bounce-vel v1 l1 width height)
-        l (p/bounce-wall l1 width height)]
-    ;;(js/console.log shape)
-    [k (p/create-obj l v (v/create 0 0) (:topspeed obj) (:mass obj))]))
-
-(defn updt [state]
+(defn apply-forces [shape]
   (let [active-forces (re-frame/subscribe [::subs/activate-force])
         wind (re-frame/subscribe [::subs/wind])
         gravity (re-frame/subscribe [::subs/gravity])
         friction (re-frame/subscribe [::subs/friction])
         liquid (re-frame/subscribe [::subs/liquid])
-        forces (compute-forces @active-forces @wind @gravity @friction @liquid)
-        updated-shapes (mapv #(apply-forces % forces) (:shapes state))]
+
+        k (first shape)
+        obj (nth shape 1)
+        mass (:mass obj)
+
+        calc-wind (p/compute-wind mass @wind @active-forces)
+        calc-friction (p/compute-friction mass (:velocity obj) @friction @active-forces)
+
+        a (v/add calc-wind calc-friction)
+        v1 (v/limit (v/add (:velocity obj) a) (:topspeed obj))
+        l1 (v/add (:location obj) v1)
+
+        v (p/bounce-vel v1 l1 width height)
+        l (p/bounce-wall l1 width height)]
+    [k (p/create-obj l v (v/create 0 0) (:topspeed obj) (:mass obj))]))
+
+(defn updt [state]
+  (let [updated-shapes (mapv #(apply-forces %) (:shapes state))]
     {:shapes updated-shapes}))
 
 (defn draw [state]

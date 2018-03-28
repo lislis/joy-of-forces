@@ -3,6 +3,6 @@
 (def default-db
   {:wind {:x 0.1 :y 0.0}
    :gravity {:x 0.0 :y 0.2}
-   :friction {:c 0.1}
+   :friction {:c 0.1 :n 1.0}
    :liquid {:c 0.4}
    :active-forces #{}})
