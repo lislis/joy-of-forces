@@ -7,21 +7,22 @@
             [re-frame.core :as re-frame]
             [joy-of-forces.subs :as subs]))
 
+(def width 800)
+(def height 500)
+(def unit 40)
+
 (defn is-active? [actives key]
   (if (= (get actives key) nil)
     false
     true))
 
 (defn spawn []
-  {:circle (p/create 250 250 0 0 0 0 5 30)
+  {:circle (p/create 230 250 0 0 0 0 5 30)
    :square (p/create 350 250 0 0 0 0 5 50)
    :triangle (p/create 470 250 0 0 0 0 5 20)})
 
 (defn setup []
   {:shapes (spawn)})
-
-(defn apply-direct-force [mass force]
-  (v/div force mass))
 
 (defn compute-forces [list wind gravity friction liquid]
   (let [empty-force (v/create 0 0)
@@ -29,17 +30,17 @@
         force1 (if (= active-wind? true)
                  {:wind (v/add empty-force wind)}
                  {:wind empty-force})]
-    (conj {} force1)
-    ;;(js/console.log (:x force1) (:y force1))
-    force1))
+    (conj {} force1)))
 
 (defn apply-forces [shape forces]
   (let [k (first shape)
         obj (nth shape 1)
-        ;;a (reduce v/add (vals forces))
-        a (:wind forces)
-        v (v/limit (v/add (:velocity obj) a) (:topspeed obj))
-        l (v/add (:location obj) v)]
+        mass (:mass obj)
+        a (p/apply-direct-force mass (reduce v/add (vals forces)))
+        v1 (v/limit (v/add (:velocity obj) a) (:topspeed obj))
+        l1 (v/add (:location obj) v1)
+        v (p/bounce-vel v1 l1 width height)
+        l (p/bounce-wall l1 width height)]
     ;;(js/console.log shape)
     [k (p/create-obj l v (v/create 0 0) (:topspeed obj) (:mass obj))]))
 
@@ -51,7 +52,6 @@
         liquid (re-frame/subscribe [::subs/liquid])
         forces (compute-forces @active-forces @wind @gravity @friction @liquid)
         updated-shapes (mapv #(apply-forces % forces) (:shapes state))]
-    ;;(js/console.log updated-shapes)
     {:shapes updated-shapes}))
 
 (defn draw [state]
@@ -70,5 +70,5 @@
   :update updt
   :host "canvas"
   ;;:features [:no-start]
-  :size [800 500]
+  :size [width height]
   :middleware [m/fun-mode])

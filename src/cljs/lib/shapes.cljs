@@ -4,9 +4,10 @@
 (def unit 50)
 
 (defn draw-circle [x y]
-  (q/fill 145 157 206)
-  (q/stroke 30)
-  (q/ellipse x y unit unit))
+  (let [x (+ x (/ unit 2))]
+    (q/fill 145 157 206)
+    (q/stroke 30)
+    (q/ellipse x y unit unit)))
 
 (defn draw-square [x y]
   (let [y1 (- y (/ unit 2))]

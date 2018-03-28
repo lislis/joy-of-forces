@@ -5,4 +5,4 @@
    :gravity {:x 0.0 :y 0.2}
    :friction {:c 0.1}
    :liquid {:c 0.4}
-   :active-forces #{:wind}})
+   :active-forces #{}})
