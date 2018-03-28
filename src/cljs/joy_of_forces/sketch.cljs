@@ -29,14 +29,17 @@
         k (first shape)
         obj (nth shape 1)
         mass (:mass obj)
+        velocity (:velocity obj)
 
         calc-wind (p/compute-wind mass @wind @active-forces)
-        calc-friction (p/compute-friction mass (:velocity obj) @friction @active-forces)
+        calc-friction (p/compute-friction mass velocity @friction @active-forces)
         calc-gravity (p/compute-gravity mass @gravity @active-forces)
+        calc-liquid (p/compute-liquid obj @liquid @active-forces)
 
         a (-> (v/add calc-wind calc-friction)
-              (v/add calc-gravity))
-        v1 (v/limit (v/add (:velocity obj) a) (:topspeed obj))
+              (v/add calc-gravity)
+              (v/add calc-liquid))
+        v1 (v/limit (v/add velocity a) (:topspeed obj))
         l1 (v/add (:location obj) v1)
 
         v (p/bounce-vel v1 l1 width height)
@@ -51,8 +54,11 @@
   (let [shapes (:shapes state)
         ci (nth (get shapes 0) 1)
         sq (nth (get shapes 1) 1)
-        tr (nth (get shapes 2) 1)]
+        tr (nth (get shapes 2) 1)
+        liquid (re-frame/subscribe [::subs/liquid])
+        active-forces (re-frame/subscribe [::subs/activate-force])]
     (q/background 220)
+    (s/draw-liquid @liquid @active-forces)
     (s/draw-circle (:x (:location ci)) (:y (:location ci)))
     (s/draw-square (:x (:location sq)) (:y (:location sq)))
     (s/draw-triangle (:x (:location tr)) (:y (:location tr)))))

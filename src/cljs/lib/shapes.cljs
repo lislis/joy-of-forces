@@ -1,5 +1,6 @@
 (ns lib.shapes
-  (:require [quil.core :as q]))
+  (:require [quil.core :as q]
+            [lib.physics :as p :refer [is-active?]]))
 
 (def unit 50)
 
@@ -25,3 +26,11 @@
     (q/fill 252 253 242)
     (q/stroke 50)
     (q/triangle x1 y1 x2 y2 x3 y3)))
+
+(defn draw-liquid [liq active-list]
+  (let [active? (is-active? active-list :liquid)]
+    (if (= active? true)
+      (do
+        (q/no-stroke)
+        (q/fill 146 198 236)
+        (q/rect (:x liq) (:y liq) (:w liq) (:h liq))))))

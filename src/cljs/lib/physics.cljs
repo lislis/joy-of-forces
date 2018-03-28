@@ -45,6 +45,16 @@
             :else (:y v))]
     (v/create x y)))
 
+(defn is-inside? [shape liquid]
+  (let [m (:location shape)
+        l liquid]
+    (if (and (> (:x m) (:x l))
+             (< (:x m) (+ (:x l) (:w l)))
+             (> (:y m) (:y l))
+             (< (:y m) (+ (:y l) (:h l))))
+      true
+      false)))
+
 (defn apply-force [mass force]
   (v/div force mass))
 
@@ -75,3 +85,22 @@
                   (apply-force mass (v/create (:x force) scaled-grav-y))
                   (v/create 0 0))]
     gravity))
+
+(defn compute-liquid [obj force active-list]
+  (let [mass (:mass obj)
+        velocity (:velocity obj)
+        location (:location obj)
+        active? (is-active? active-list :liquid)
+        inside? (is-inside? obj force)
+        drag (if (and (= active? true)
+                      (= inside? true))
+               (let [speed (v/mag velocity)
+                     drag-mag (* (:c force) speed speed)
+                     drag (-> velocity
+                              (v/mult -1)
+                              (v/normalize)
+                              (v/mult drag-mag))]
+                 (apply-force mass drag))
+               (v/create 0 0))
+        ]
+    drag))
