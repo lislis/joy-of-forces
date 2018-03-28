@@ -32,8 +32,10 @@
 
         calc-wind (p/compute-wind mass @wind @active-forces)
         calc-friction (p/compute-friction mass (:velocity obj) @friction @active-forces)
+        calc-gravity (p/compute-gravity mass @gravity @active-forces)
 
-        a (v/add calc-wind calc-friction)
+        a (-> (v/add calc-wind calc-friction)
+              (v/add calc-gravity))
         v1 (v/limit (v/add (:velocity obj) a) (:topspeed obj))
         l1 (v/add (:location obj) v1)
 

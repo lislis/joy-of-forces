@@ -4,6 +4,7 @@
 (def bouncyness-wall -0.5)
 (def bouncyness-floor -0.5)
 (def unit 40)
+(def magical-unit 25)
 
 (defn create-obj [l v a topspeed mass]
   {:location l
@@ -21,25 +22,30 @@
    mass))
 
 (defn bounce-wall [l w h]
-  (let [x (cond (> (:x l) (- w unit)) (- w unit)
+  (let [half-w (- w unit)
+        half-h (- h magical-unit)
+        x (cond (> (:x l) half-w) half-w
                 (< (:x l) 0) 0
                 :else (:x l))
-        y (if (> (:y l) h)
-            h
-            (:y l))]
+        y (cond (> (:y l) half-h) half-h
+                (< (:y l) magical-unit) magical-unit
+                :else (:y l))]
     (v/create x y)))
 
 (defn bounce-vel [v l w h]
-  (let [x (cond
-            (> (:x l) (- w unit)) (* bouncyness-wall (:x v))
+  (let [half-w (- w unit)
+        half-h (- h magical-unit)
+        x (cond
+            (> (:x l) half-w) (* bouncyness-wall (:x v))
             (< (:x l) 0) (* bouncyness-wall (:x v))
             :else (:x v))
-        y (if (> (:y l) h)
-            (* bouncyness-floor (:y v))
-            (:y v))]
+        y (cond
+            (> (:y l) half-h) (* bouncyness-floor (:y v))
+            (< (:y l) magical-unit) (* bouncyness-floor (:y v))
+            :else (:y v))]
     (v/create x y)))
 
-(defn apply-direct-force [mass force]
+(defn apply-force [mass force]
   (v/div force mass))
 
 (defn is-active? [actives key]
@@ -50,7 +56,7 @@
 (defn compute-wind [mass force active-list]
   (let [active? (is-active? active-list :wind)
         wind (if (= active? true)
-               (apply-direct-force mass force)
+               (apply-force mass force)
                (v/create 0 0))]
     wind))
 
@@ -58,6 +64,14 @@
   (let [active? (is-active? active-list :friction)
         fric-mag (* (:c force) (:n force))
         friction (if (= active? true)
-                   (apply-direct-force mass (v/mult (v/normalize (v/mult velocity -1)) fric-mag))
+                   (apply-force mass (v/mult (v/normalize (v/mult velocity -1)) fric-mag))
                    (v/create 0 0))]
     friction))
+
+(defn compute-gravity [mass force active-list]
+  (let [active? (is-active? active-list :gravity)
+        scaled-grav-y (* (:y force) mass)
+        gravity (if (= active? true)
+                  (apply-force mass (v/create (:x force) scaled-grav-y))
+                  (v/create 0 0))]
+    gravity))
