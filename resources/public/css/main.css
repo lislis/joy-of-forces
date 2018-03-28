@@ -54,6 +54,10 @@ input[type=checkbox]:checked ~ .control-drawer {
 label {
 }
 
+.panel {
+  margin-bottom: 2em;
+}
+
 .panel .control-panel:nth-child(even) {
   background-color: #eee;
 }
