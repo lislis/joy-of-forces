@@ -3,7 +3,9 @@
             [quil.middleware :as m]
             [lib.vector :as v]
             [lib.shapes :as s]
-            [lib.physics :as p]))
+            [lib.physics :as p]
+            [re-frame.core :as re-frame]
+            [joy-of-forces.subs :as subs]))
 
 (defn spawn []
   {:circle (p/create 250 250 0 0 0 0 5 30)
@@ -14,13 +16,16 @@
   {:shapes (spawn)})
 
 (defn updt [state]
-  state)
+  (let [wind (re-frame/subscribe [::subs/wind])]
+    (js/console.log (:x @wind))
+    state))
 
 (defn draw [state]
   (let [shapes (:shapes state)
         ci (:circle shapes)
         sq (:square shapes)
         tr (:triangle shapes)]
+    (q/background 220)
     (s/draw-circle (:x (:location ci)) (:y (:location ci)))
     (s/draw-square (:x (:location sq)) (:y (:location sq)))
     (s/draw-triangle (:x (:location tr)) (:y (:location tr)))))

@@ -17,7 +17,7 @@
     [:div
      [:h1 "The joy of simulating forces"]
      [:div.panel
-      [:h2.panel-opener "Force panel"]
+      [:h2.panel-opener "Force controls"]
       [:div.control-panel
        [:input {:type "checkbox" :id "wind-check"
                 :checked (is-checked? @active-forces :wind)
