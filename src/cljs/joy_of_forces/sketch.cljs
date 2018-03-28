@@ -13,7 +13,6 @@
 (defn setup []
   {:shapes (spawn)})
 
-
 (defn updt [state]
   state)
 
