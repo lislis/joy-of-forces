@@ -1,4 +1,10 @@
-# joy-of-forces
+# The joy of simulating forces
+
+A little interactive app to toy around with simulated forces.
+Based on Processing/ quil-cljs.
+
+
+Want to do the same? Read [Daniel Schiffman's book 'Nature of Code'](http://natureofcode.com/book/).
 
 A [re-frame](https://github.com/Day8/re-frame) application designed to ... well, that part is up to you.
 
