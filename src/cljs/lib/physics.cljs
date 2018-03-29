@@ -1,10 +1,12 @@
 (ns lib.physics
-  (:require [lib.vector :as v]))
+  (:require [lib.vector :as v]
+            [quil.core :as q]))
 
 (def bouncyness-wall -0.5)
 (def bouncyness-floor -0.5)
 (def unit 40)
 (def magical-unit 25)
+(def G 0.4)
 
 (defn create-obj [l v a topspeed mass]
   {:location l
@@ -104,3 +106,12 @@
                (v/create 0 0))
         ]
     drag))
+
+(defn compute-gravitation [obj attractor]
+  (let [force (v/sub (:location attractor) (:location obj))
+        distance (q/constrain (v/mag force) 20 50)
+        norm-force (v/normalize force)
+        strength (/ (* G (:mass attractor) (:mass obj))
+                    (* distance distance))
+        scaled-force (v/mult force strength)]
+    scaled-force))

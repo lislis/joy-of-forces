@@ -5,8 +5,7 @@
             [joy-of-forces.views :as views]
             [joy-of-forces.config :as config]
             [joy-of-forces.sketch :as sketch]
-            ;;[quil.core :as q :include-macros true]
-            ))
+            [joy-of-forces.planet :as planet]))
 
 
 (defn dev-setup []
@@ -23,4 +22,9 @@
   (re-frame/dispatch-sync [::events/initialize-db])
   (dev-setup)
   (mount-root)
-  (sketch/sketch))
+  (if (.getElementById js/document "canvas")
+    (sketch/sketch)))
+
+(defn ^:export planet []
+  (if (.getElementById js/document "planet")
+    (planet/sketch)))
