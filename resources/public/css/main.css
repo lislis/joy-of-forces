@@ -13,6 +13,9 @@ body {
 a {
   color: currentColor;
 }
+a:focus {
+  outline: 2px dotted teal;
+}
 
 .wrapper {
   display: flex;
@@ -53,7 +56,42 @@ input[type=checkbox]:checked ~ .control-drawer {
   display: flex;
 }
 
-label {
+input[type="checkbox"] {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: 0;
+  opacity: 0;
+}
+
+input[type="checkbox"] + label:before {
+  content: "";
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  margin-right: .5em;
+  background-color: #888;
+  border-radius: 2px;
+  vertical-align: middle;
+  font-size: 2em;
+  line-height: 0.5;
+}
+
+input[type="checkbox"]:checked + label:before {
+  background-color: #888;
+  color: #333;
+  content: "✔️";
+}
+
+input[type="checkbox"]:focus + label:before {
+  outline: 2px dotted teal;
+}
+input[type="checkbox"]:checked:focus + label:before {
+  outline: 2px dotted teal;
 }
 
 .panel {
@@ -92,6 +130,8 @@ label {
 
 button {
   display: inline-block;
+  width: 50px;
+  height: 40px;
   padding: 0.3em 0.6em;
   font: inherit;
   background-color: #888;
@@ -104,4 +144,8 @@ button {
 button:hover,
 button:active {
   background-color: #555;
+}
+
+button:focus {
+  outline: 2px dotted teal;
 }
