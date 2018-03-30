@@ -25,7 +25,7 @@
        [:label {:for "wind-check"} "Activate wind"]
        [:div.control-drawer
         [:p "Wind: "
-         [:span.value (:x @wind)]]
+         [:span.value (.toFixed (:x @wind) 1)]]
         [:button
          {:on-click #(re-frame/dispatch [:increase-wind 0.1])}
          "+"]
@@ -40,7 +40,7 @@
        [:label {:for "fric-check"} "Activate friction"]
        [:div.control-drawer
         [:p "Friction: "
-         [:span.value (:c @friction)]]
+         [:span.value (.toFixed (:c @friction) 1)]]
         [:button
          {:on-click #(re-frame/dispatch [:increase-friction 0.1])}
          "+"]
@@ -54,7 +54,7 @@
        [:label {:for "gravity-check"} "Activate gravity"]
        [:div.control-drawer
         [:p "Gravity: "
-         [:span.value (:y @gravity)]]
+         [:span (.toFixed (:y @gravity) 1)]]
         [:button
          {:on-click #(re-frame/dispatch [:increase-gravity 0.1])}
          "+"]
@@ -68,7 +68,7 @@
        [:label {:for "liquid-check"} "Activate liquid (drag force)"]
        [:div.control-drawer
         [:p "Drag: "
-         [:span.value (:c @liquid)]]
+         [:span (.toFixed (:c @liquid) 1)]]
         [:button
          {:on-click #(re-frame/dispatch [:increase-drag 0.1])}
          "+"]

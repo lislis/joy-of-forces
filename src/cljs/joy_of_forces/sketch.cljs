@@ -12,9 +12,9 @@
 (def unit 40)
 
 (defn spawn []
-  {:circle (p/create 230 250 0 0 0 0 5 30)
-   :square (p/create 350 250 0 0 0 0 5 50)
-   :triangle (p/create 470 250 0 0 0 0 5 20)})
+  {:circle (p/create 130 250 0 0 0 0 5 30)
+   :square (p/create 250 250 0 0 0 0 5 50)
+   :triangle (p/create 370 250 0 0 0 0 5 20)})
 
 (defn setup []
   {:shapes (spawn)})
