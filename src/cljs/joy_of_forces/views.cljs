@@ -24,7 +24,8 @@
                 :on-change #(re-frame/dispatch [:activate-force :wind])}]
        [:label {:for "wind-check"} "Activate wind"]
        [:div.control-drawer
-        [:p "Wind: " (:x @wind)]
+        [:p "Wind: "
+         [:span.value (:x @wind)]]
         [:button
          {:on-click #(re-frame/dispatch [:increase-wind 0.1])}
          "+"]
@@ -33,25 +34,13 @@
          "-"]]
        ]
       [:div.control-panel
-       [:input {:type "checkbox" :id "gravity-check"
-                :checked (is-checked? @active-forces :gravity)
-                :on-change #(re-frame/dispatch [:activate-force :gravity])}]
-       [:label {:for "gravity-check"} "Activate gravity"]
-       [:div.control-drawer
-        [:p "Gravity: " (:y @gravity)]
-        [:button
-         {:on-click #(re-frame/dispatch [:increase-gravity 0.1])}
-         "+"]
-        [:button
-         {:on-click #(re-frame/dispatch [:decrease-gravity 0.1])}
-         "-"]]]
-      [:div.control-panel
        [:input {:type "checkbox" :id "fric-check"
                 :checked (is-checked? @active-forces :friction)
                 :on-change #(re-frame/dispatch [:activate-force :friction])}]
        [:label {:for "fric-check"} "Activate friction"]
        [:div.control-drawer
-        [:p "Friction: " (:c @friction)]
+        [:p "Friction: "
+         [:span.value (:c @friction)]]
         [:button
          {:on-click #(re-frame/dispatch [:increase-friction 0.1])}
          "+"]
@@ -59,12 +48,27 @@
          {:on-click #(re-frame/dispatch [:decrease-friction 0.1])}
          "-"]]]
       [:div.control-panel
+       [:input {:type "checkbox" :id "gravity-check"
+                :checked (is-checked? @active-forces :gravity)
+                :on-change #(re-frame/dispatch [:activate-force :gravity])}]
+       [:label {:for "gravity-check"} "Activate gravity"]
+       [:div.control-drawer
+        [:p "Gravity: "
+         [:span.value (:y @gravity)]]
+        [:button
+         {:on-click #(re-frame/dispatch [:increase-gravity 0.1])}
+         "+"]
+        [:button
+         {:on-click #(re-frame/dispatch [:decrease-gravity 0.1])}
+         "-"]]]
+      [:div.control-panel
        [:input {:type "checkbox" :id "liquid-check"
                 :checked (is-checked? @active-forces :liquid)
                 :on-change #(re-frame/dispatch [:activate-force :liquid])}]
        [:label {:for "liquid-check"} "Activate liquid (drag force)"]
        [:div.control-drawer
-        [:p "Drag: " (:c @liquid)]
+        [:p "Drag: "
+         [:span.value (:c @liquid)]]
         [:button
          {:on-click #(re-frame/dispatch [:increase-drag 0.1])}
          "+"]

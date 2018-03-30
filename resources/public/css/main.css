@@ -94,6 +94,13 @@ input[type="checkbox"]:checked:focus + label:before {
   outline: 2px dotted teal;
 }
 
+.value {
+  width: 39px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
+}
+
 .panel {
   margin-bottom: 2em;
 }
